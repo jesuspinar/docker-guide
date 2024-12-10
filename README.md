@@ -207,13 +207,13 @@ El proceso de _dockerización_ consiste en encapsular todos los requisitos de tu
  **Bridge** es la red por defecto que se asigna a los contenedores y al compartir la pueden comunicarse entre sí, no serán accesibles desde fuera sin configuración adicional. Tendremos que compartir los puertos:
 		    
 ```bash
-    docker run -it --publish 5000:3000 --name app-node ubuntu:22.04
+docker run -it --publish 5000:3000 --name app-node ubuntu:22.04
 ```
 
 Ademas de compartir los puertos debemos saber que IP tiene ese contenedor para poder acceder a su servicio, un comando rápido nos facilita esto:
     
 ```bash
-    docker inspect --format "{{.NetworkSettings.IPAddress}}" [container_name]
+docker inspect --format "{{.NetworkSettings.IPAddress}}" [container_name]
 ```
     
 Como medida adicional es recomendable que nuestra aplicación del contenedor este configurada con la **IPV4 en la dirección 0.0.0.0** para aceptar conexiones externas.
