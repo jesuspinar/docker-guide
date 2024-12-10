@@ -1,7 +1,6 @@
 # Teoría y Uso de Docker
 
 Docker es una herramienta poderosa para desarrollar, desplegar y ejecutar aplicaciones en contenedores, garantizando portabilidad y consistencia en diferentes entornos.
-
 ## Índice
 1. [¿Por qué se creó Docker?](#por-qué-se-creó-docker)
 2. [Tipos de Escalabilidad](#tipos-de-escalabilidad)
@@ -36,7 +35,10 @@ En el pasado, mover software entre máquinas requería garantizar que el entorno
 **Docker automatiza esta tarea, garantizando que las aplicaciones puedan ejecutarse en cualquier entorno sin importar el proveedor de infraestructura.**
 
 ## Tipos de Escalabilidad
-...
+
+- **Horizontal:** Agregar más servidores con las mismas especificaciones.
+- **Vertical:** Incrementar la capacidad de los servidores existentes.
+
 
 ## ¿Por qué se creó Docker?
 
