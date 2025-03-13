@@ -28,17 +28,6 @@ Docker es una herramienta poderosa para desarrollar, desplegar y ejecutar aplica
     - [Configurar el plan y realizar el pago](#configurar-el-plan-y-realizar-el-pago)
     - [Desplegar la aplicación](#desplegar-la-aplicación)
 
-## ¿Por qué se creó Docker?
-
-En el pasado, mover software entre máquinas requería garantizar que el entorno del sistema operativo y sus dependencias fueran idénticos. Este proceso, conocido como _software shipping_, era propenso a errores.
-
-**Docker automatiza esta tarea, garantizando que las aplicaciones puedan ejecutarse en cualquier entorno sin importar el proveedor de infraestructura.**
-
-## Tipos de Escalabilidad
-
-- **Horizontal:** Agregar más servidores con las mismas especificaciones.
-- **Vertical:** Incrementar la capacidad de los servidores existentes.
-
 
 ## ¿Por qué se creó Docker?
 
@@ -158,7 +147,7 @@ Docker **no** es una máquina virtual. En lugar de interpretar cada instrucción
     ```
     
 **Nota importante**:
-- eliminar los contenedores antes de eliminar imágenes 
+- Eliminar los contenedores antes de eliminar imágenes 
 
 
 ## Dockerización de Aplicaciones
