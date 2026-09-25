@@ -1,219 +1,207 @@
-# Teoría y Uso de Docker
+# Theory and Use of Docker
 
-Docker es una herramienta poderosa para desarrollar, desplegar y ejecutar aplicaciones en contenedores, garantizando portabilidad y consistencia en diferentes entornos.
-## Índice
-1. [¿Por qué se creó Docker?](#por-qué-se-creó-docker)
-2. [Tipos de Escalabilidad](#tipos-de-escalabilidad)
-3. [¿Qué es Docker?](#qué-es-docker)
-4. [Instalación de Docker en Linux](#instalación-de-docker-en-linux)
-5. [Comandos Comunes de Docker CLI](#comandos-comunes-de-docker-cli)
-   - [Imágenes](#imágenes)
-   - [Contenedores](#contenedores)
-   - [Inspección y gestión](#inspección-y-gestión)
-   - [Limpieza](#limpieza)
-6. [Dockerización de Aplicaciones](#dockerización-de-aplicaciones)
-   - [Ejemplo para una aplicación Node.js](#ejemplo-para-una-aplicación-nodejs)
-   - [Redes en docker](#redes-en-docker)
-7. [Conceptos avanzados](#conceptos-avanzados)
-   - [Multi-stages en Docker](#multi-stages-en-docker)
-   - [CMD: Shell Form vs Exec Form](#cmd-shell-form-vs-exec-form)
-8. [Crear contenedores para desarrollo con Docker](#crear-contenedores-para-desarrollo-con-docker)
-   - [Usando la extensión oficial de Dev Containers en VSCode](#usando-la-extensión-oficial-de-dev-containers-en-vscode)
-   - [Usando la CLI de Docker](#usando-la-cli-de-docker)
-9. [Consejos para despliegues a producción](#consejos-para-despliegues-a-producción)
-10. [Desplegar una Aplicación en DigitalOcean con Docker](#desplegar-una-aplicación-en-digitalocean-con-docker)
-    - [Crear cuentas necesarias](#crear-cuentas-necesarias)
-    - [Construir y subir tu imagen a Docker Hub](#construir-y-subir-tu-imagen-a-docker-hub)
-    - [Configurar y elegir los recursos en DigitalOcean](#configurar-y-elegir-los-recursos-en-digitalocean)
-    - [Configurar el plan y realizar el pago](#configurar-el-plan-y-realizar-el-pago)
-    - [Desplegar la aplicación](#desplegar-la-aplicación)
+Docker is a powerful tool for developing, deploying, and running applications in containers, ensuring portability and consistency across different environments.
 
+## Table of Contents
+1. [Why was Docker created?](#why-was-docker-created)
+2. [Types of Scalability](#types-of-scalability)
+3. [What is Docker?](#what-is-docker)
+4. [Installing Docker on Linux](#installing-docker-on-linux)
+5. [Common Docker CLI Commands](#common-docker-cli-commands)
+    - [Images](#images)
+    - [Containers](#containers)
+    - [Inspection and management](#inspection-and-management)
+    - [Cleanup](#cleanup)
+6. [Dockerizing Applications](#dockerizing-applications)
+    - [Example for a Node.js application](#example-for-a-nodejs-application)
+    - [Docker networks](#docker-networks)
+7. [Advanced Concepts](#advanced-concepts)
+    - [Multi-stage builds in Docker](#multi-stage-builds-in-docker)
+    - [CMD: Shell Form vs Exec Form](#cmd-shell-form-vs-exec-form)
+8. [Creating Development Containers with Docker](#creating-development-containers-with-docker)
+    - [Using the official Dev Containers extension in VSCode](#using-the-official-dev-containers-extension-in-vscode)
+    - [Using the Docker CLI](#using-the-docker-cli)
+9. [Tips for Production Deployments](#tips-for-production-deployments)
+10. [Deploying an Application on DigitalOcean with Docker](#deploying-an-application-on-digitalocean-with-docker)
+     - [Create necessary accounts](#create-necessary-accounts)
+     - [Build and push your image to Docker Hub](#build-and-push-your-image-to-docker-hub)
+     - [Configure and choose resources on DigitalOcean](#configure-and-choose-resources-on-digitalocean)
+     - [Configure the plan and make the payment](#configure-the-plan-and-make-the-payment)
+     - [Deploy the application](#deploy-the-application)
 
-## ¿Por qué se creó Docker?
+## Why was Docker created?
 
-En el pasado, mover software entre máquinas requería garantizar que el entorno del sistema operativo y sus dependencias fueran idénticos. Este proceso, conocido como _software shipping_, era propenso a errores.
+In the past, moving software between machines required ensuring that the operating system environment and its dependencies were identical. This process, known as _software shipping_, was problematic and time-consuming. Docker automates this task, ensuring that applications can run in any environment regardless of the infrastructure provider.
 
-**Docker automatiza esta tarea, garantizando que las aplicaciones puedan ejecutarse en cualquier entorno sin importar el proveedor de infraestructura.**
-## Tipos de Escalabilidad
+## Types of Scalability
 
-- **Horizontal:** Agregar más servidores con las mismas especificaciones.
-- **Vertical:** Incrementar la capacidad de los servidores existentes.
+- **Horizontal:** Adding more servers with the same specifications.
+- **Vertical:** Increasing the capacity of existing servers.
 
-## ¿Qué es Docker?
+## What is Docker?
 
-Docker **no** es una máquina virtual. En lugar de interpretar cada instrucción para el sistema operativo, como lo hacen las máquinas virtuales, Docker utiliza **contenedores**.
+Docker is **not** a virtual machine. Instead of interpreting each instruction for the operating system like virtual machines do, Docker uses **containers**.
 
-- Un **contenedor** es un paquete que incluye todo lo necesario para ejecutar una aplicación: sistema de archivos, bibliotecas, dependencias, etc. Todo su sistema de ficheros queda aislado por defecto.
-- Los contenedores se basan en imágenes, que actúan como un plano para definir su contenido.
+- A **container** is a package that includes everything needed to run an application: file system, libraries, dependencies, etc. Its file system is isolated by default.
+- Containers are based on images, which act as a blueprint to define their content.
 
-## Instalación de Docker en Linux
+## Installing Docker on Linux
 
-1. [Guía oficial de instalación](https://docs.docker.com/engine/install/)
-2. Post-instalación:
-    - Asignar un usuario a Docker.
-    - Asegurarse de que el demonio de Docker esté en ejecución: 
-	     `sudo systemctl start docker`
+1. [Official installation guide](https://docs.docker.com/engine/install/)
+2. Post-installation:
+    - Assign a user to Docker.
+    - Ensure the Docker daemon is running:
+      `sudo systemctl start docker`
 
-## Comandos Comunes de Docker CLI
+## Common Docker CLI Commands
 
-### Imágenes
+### Images
 
-- Descargar imagen:
-    
+- Pull an image:
+
     ```bash
     docker pull debian
     ```
-    
-- Listar imágenes:
-    
+
+- List images:
+
     ```bash
     docker images
     ```
-    
-### Contenedores
 
-- Listar contenedores:
-    
+### Containers
+
+- List containers:
+
     ```bash
     docker ps -a
     ```
-    
-- Crear e iniciar un contenedor interactivo:
-    
+
+- Create and start an interactive container:
+
     ```bash
     docker container create --interactive --tty --name [name] [image]
     docker container start --interactive [name]
     ```
-    
-- Ejecutar un contenedor y adjuntarse a él:
-    
+
+- Run a container and attach to it:
+
     ```bash
     docker container attach [name]
     ```
-    
-- Copiar archivos:
-    
+
+- Copy files:
+
     ```bash
     docker cp ./local-file.txt debian-console:/destination-path
     ```
-    
-### Inspección y gestión
 
-- Inspeccionar un contenedor:
-    
+### Inspection and management
+
+- Inspect a container:
+
     ```bash
     docker container inspect [name]
     ```
 
-- Ejecutar un comando de un contenedor sin entrar en el:
-    
+- Execute a command in a container without entering it:
+
     ```bash
     docker exec --tty [name] apt list installed
     ```
-    
-- Formas de parar contenedores:
-    
+
+- Ways to stop containers:
+
     ```bash
     docker stop $(docker ps --quiet)  
-	docker stop $(docker ps --filter "name=debian-" --quiet)  
-	docker stop $(docker ps --filter "ancestor=fedora-" --quiet)
-	docker kill [name] # lo detiene inmediatamente 
+    docker stop $(docker ps --filter "name=debian-" --quiet)  
+    docker stop $(docker ps --filter "ancestor=fedora-" --quiet)
+    docker kill [name] # stops it immediately 
     ```
 
-### Limpieza
+### Cleanup
 
-- Eliminar contenedores :
-    
+- Remove containers:
+
     ```bash
     docker container rm [name | id]
     ```
-    
-- Eliminar imagen :
-    
+
+- Remove image:
+
     ```bash
     docker container rmi [image]
     ```
 
-- Eliminar imágenes no usadas:
-    
+- Remove unused images:
+
     ```bash
     docker image prune --all
     ```
-    
-- Limpieza total del sistema:
-    
+
+- Complete system cleanup:
+
     ```bash
     docker system prune
     ```
-    
-**Nota importante**:
-- Eliminar los contenedores antes de eliminar imágenes 
 
+**Important Note**:
+- Remove containers before removing images.
 
-## Dockerización de Aplicaciones
+## Dockerizing Applications
 
-El proceso de _dockerización_ consiste en encapsular todos los requisitos de tu aplicación dentro de una imagen.
+The process of _dockerizing_ involves encapsulating all your application's requirements within an image.
 
-### Ejemplo para una aplicación Node.js:
+### Example for a Node.js application:
 
-1. Crear un archivo `Dockerfile` en el directorio del proyecto. 
-    
+1. Create a `Dockerfile` in the project directory:
+
     ```Dockerfile
     FROM ubuntu:22.04
-    
+
     RUN apt update && apt install -y curl \
         && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
         && apt-get install -y nodejs 
-    
+
     WORKDIR /app
     COPY index.js ./
-    
+
     EXPOSE 3000
     CMD node index.js
     ```
-    
-2. Construir la imagen:
-    
+
+2. Build the image:
+
     ```bash
-    docker build -t usuario/nombre-app:0.1.0 .
+    docker build -t user/app-name:0.1.0 .
     ```
-    
-3. Ejecutar el contenedor:
-    
+
+3. Run the container:
+
     ```bash
-    docker run -it -p 8010:3000 --name app-node usuario/nombre-app:0.1.0
+    docker run -it -p 8010:3000 --name app-node user/app-name:0.1.0
     ```
-    
 
-**Consejos:**
+**Tips:**
 
-- Usa imágenes ligeras como `alpine` para reducir el tamaño.
-- Separa la instalación de dependencias de la copia del código para optimizar el caché.
+- Use lightweight images like `alpine` to reduce size.
+- Separate dependency installation from code copying to optimize cache.
 
+### Docker networks
 
-### Redes en docker 
+**Bridge** is the default network assigned to containers, allowing them to communicate with each other. They will not be accessible from the outside without additional configuration. You need to know the IP of the container to access its service, a quick command facilitates this:
 
- **Bridge** es la red por defecto que se asigna a los contenedores y al compartir la pueden comunicarse entre sí, no serán accesibles desde fuera sin configuración adicional. Tendremos que compartir los puertos:
-		    
-```bash
-docker run -it --publish 5000:3000 --name app-node ubuntu:22.04
-```
-
-Ademas de compartir los puertos debemos saber que IP tiene ese contenedor para poder acceder a su servicio, un comando rápido nos facilita esto:
-    
 ```bash
 docker inspect --format "{{.NetworkSettings.IPAddress}}" [container_name]
 ```
-    
-Como medida adicional es recomendable que nuestra aplicación del contenedor este configurada con la **IPV4 en la dirección 0.0.0.0** para aceptar conexiones externas.
 
+Additionally, it is recommended that your container application is configured with **IPV4 at address 0.0.0.0** to accept external connections.
 
-## Conceptos avanzados 
-### Multi-stages en Docker
+## Advanced Concepts 
 
-La idea es tener dos o mas etapas, la primera imagen se encarga de descargar, instalar y compilar. La segunda etapa se usa para ejecutar, esto ahorra en peso en la imagen final. Puedes ver como se hace uso de alias para acceder a recursos de la imagen anterior que se encuentra cacheada.
+### Multi-stage builds in Docker
 
-Aquí puedes ver con un ejemplo:
+The idea is to have two or more stages, the first image handles downloading, installing, and compiling. The second stage is used for execution, saving space in the final image. An example:
 
 ```Dockerfile
 # First stage
@@ -228,74 +216,74 @@ EXPOSE 8080
 CMD ./app-go
 ```
 
-De esta forma, la lógica que hay en la primera etapa sirve de forma temporal para instalar las dependencias necesarias para generar el binario. Mientras que la segunda solo se copiara el ejecutable necesario para el sistema.
+The logic in the first stage is temporarily used to install the necessary dependencies to generate the binary. The second stage only copies the executable.
 
-**Nota Importante:**  Es mejor si usamos la misma distro de linux en ambos etapas.
+**Important Note:** Use the same Linux distro in both stages.
 
 ### CMD: Shell Form vs Exec Form
 
-| Característica       | Shell Form      | Exec Form        |
+| Feature             | Shell Form      | Exec Form        |
 | -------------------- | --------------- | ---------------- |
-| Número de procesos   | 2               | 1                |
-| Ctrl + C             | Para el proceso | No para          |
-| Señal SIGTERM        | No recibe       | Recibe señales   |
-| Variables de entorno | Se sustituyen   | No se sustituyen |
+| Number of processes | 2               | 1                |
+| Ctrl + C            | Stops process   | Doesn't stop     |
+| SIGTERM signal      | Doesn't receive | Receives signals |
+| Environment variables | Substituted    | Not substituted  |
 
-#### Otros parámetros: 
+#### Other parameters: 
 
-**Entrypoint:** Ejecutable obligatorio que recibe la imagen, puede recibir argumentos.
+**Entrypoint:** Mandatory executable that the image receives, can receive arguments.
 
 ```Dockerfile
 # ...
 ENTRYPOINT ["node"]
 ```
 
+## Creating Development Containers with Docker
 
-## Crear contenedores para desarrollo con Docker
+This guide explores two ways to create development containers using Docker. This is useful for setting up isolated and reproducible environments, ideal for working on projects.
 
-En esta guía exploraremos dos formas de crear contenedores para desarrollo utilizando Docker. Esto es útil para configurar entornos aislados y reproducibles, ideales para trabajar en proyectos sin necesidad de instalar herramientas directamente en tu sistema.
+### 1. Using the official Dev Containers extension in VSCode
 
-### 1. Usando la extensión oficial de Dev Containers en VSCode
+Visual Studio Code (VSCode) offers easy integration for working with containers using Microsoft's official **Dev Containers** extension.
 
-Visual Studio Code (VSCode) ofrece una integración sencilla para trabajar con contenedores mediante la extensión oficial de Microsoft: **Dev Containers**.
+#### Steps:
+1. **Install necessary extensions**:
+    - Open VSCode.
+    - Go to the extensions section (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS).
+    - Search and install the following extensions:
+      - [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
+      - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
-#### Pasos:
-1. **Instalar las extensiones necesarias**:
-   - Abre VSCode.
-   - Ve a la sección de extensiones (`Ctrl+Shift+X` o `Cmd+Shift+X` en macOS).
-   - Busca e instala las siguientes extensiones:
-     - [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
-     - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+2. **Open your project in a development container**:
+    - In VSCode, open your desired project or folder.
+    - Use the `Ctrl+Shift+P` command (or `Cmd+Shift+P` on macOS) to open the command palette.
+    - Type and select `Dev Containers: Open Folder in Container...`.
+    - Follow the instructions to set up a container. If you don't have a configuration file, VSCode will guide you to create one. At this point, you can choose pre-defined containers.
 
-2. **Abrir tu proyecto en un contenedor de desarrollo**:
-   - En VSCode, abre tu proyecto o carpeta deseada.
-   - Usa el comando `Ctrl+Shift+P` (o `Cmd+Shift+P` en macOS) para abrir la paleta de comandos.
-   - Escribe y selecciona `Dev Containers: Open Folder in Container...`.
-   - Sigue las instrucciones para configurar un contenedor. Si no tienes un archivo de configuración, VSCode te guiará para crear uno. En este punto podrás elegir contenedores ya predefinidos para tu lenguaje y tus necesidades.
+3. **Customize the container** (optional):
+    - VSCode uses a `.devcontainer/devcontainer.json` file to configure the container environment.
+    - You can define the base image, specific extensions, and more.
 
-3. **Personalizar el contenedor** (opcional):
-   - VSCode utiliza un archivo llamado `.devcontainer/devcontainer.json` para configurar el entorno del contenedor.
-   - Puedes definir la imagen base, extensiones específicas, y más.
-  
-4. **Para tener soporte y auto completado**:
-   - Usa el comando `Ctrl+Shift+P` (o `Cmd+Shift+P` en macOS) y filtra con `>Python: select interpreter`.
-   - Selecciona manualmente el path de tu intérprete de Python.
-   - Esto puede variar según el lenguaje
+4. **For support and autocomplete**:
+    - Use the `Ctrl+Shift+P` command (or `Cmd+Shift+P` on macOS) and filter with `>Python: select interpreter`.
+    - Manually select your Python interpreter path.
+    - This may vary depending on the language.
 
-5. **Configurar el depurador**:
-   - Ve al apartado de "Run & Debug" en la barra lateral.
-   - Ejecuta el depurador una vez.
-   - Selecciona la configuración sugerida por defecto y asegúrate de elegir la que corresponda a tu aplicación (por ejemplo, Flask si estás trabajando con este framework).
+5. **Configure the debugger**:
+    - Go to the "Run & Debug" section in the sidebar.
+    - Run the debugger once.
+    - Select the suggested default configuration and make sure to choose the one that corresponds to your application (e.g., Flask if working with this framework).
 
-6. **Salir del contenedor**:
-   - Para salir del contenedor y volver al entorno local, usa el menú `File > Close Remote Connection`.
-### 2. Usando la CLI de Docker
+6. **Exit the container**:
+    - To exit the container and return to the local environment, use `File > Close Remote Connection`.
 
-La línea de comandos de Docker (CLI) permite crear y gestionar contenedores de manera directa. Este enfoque es ideal si prefieres trabajar sin interfaces gráficas o deseas un mayor control. 
+### 2. Using the Docker CLI
 
-#### Ejemplo básico:
+The Docker command line interface (CLI) allows you to create and manage containers directly. This approach is ideal if you prefer working without graphical interfaces or want more control.
 
-Para crear un contenedor primero que nos situamos en una carpeta de desarrollo en nuestro sistema. Después puedes usar el siguiente comando:
+#### Basic example:
+
+To create a container, first navigate to a development folder on your system. Then you can use the following command:
 
 ```bash
 docker run -it --workdir /app --name python-dev \
@@ -303,138 +291,136 @@ docker run -it --workdir /app --name python-dev \
   ubuntu:22.04
 ```
 
-En este comando:
-- `-it`: Ejecuta el contenedor en modo interactivo con un terminal.
-- `--workdir /app`: Establece el directorio de trabajo dentro del contenedor.
-- `--name python-dev`: Asigna un nombre al contenedor.
-- `--mount`: Monta un volumen compartido:
-  - `type=bind`: Define un enlace entre el sistema de archivos del host y el contenedor.
-  - `source=$(pwd)`: Especifica el directorio actual como origen.
-  - `target=/app`: Define el punto de montaje en el contenedor.
-- `ubuntu:22.04`: Especifica la imagen base y su versión.
+In this command:
+- `-it`: Runs the container in interactive mode with a terminal.
+- `--workdir /app`: Sets the working directory inside the container.
+- `--name python-dev`: Assigns a name to the container.
+- `--mount`: Mounts a shared volume:
+  - `type=bind`: Defines a link between the host's file system and the container.
+  - `source=$(pwd)`: Specifies the current directory as the source.
+  - `target=/app`: Defines the mount point in the container.
+- `ubuntu:22.04`: Specifies the base image and its version.
 
-#### Solución a problemas de permisos:
+#### Solving permission issues:
 
-Si encuentras problemas de permisos al acceder a los archivos montados desde el host, puedes resolverlos creando un usuario en el contenedor que coincida con el usuario del host.
+If you encounter permission issues accessing files mounted from the host, you can resolve them by creating a user in the container that matches the host user.
 
-1. Identifica tu usuario:
-   ```bash
-   cat /etc/passwd | grep $(whoami)
-   ```
+1. Identify your user:
+    ```bash
+    cat /etc/passwd | grep $(whoami)
+    ```
 
-2. Dentro del contenedor, crea un usuario con el mismo UID:
-   ```bash
-   useradd -m -s "/bin/bash" usuario
-   ```
+2. Inside the container, create a user with the same UID:
+    ```bash
+    useradd -m -s "/bin/bash" user
+    ```
 
-3. Restablecer los permisos sobre archivos existentes:
-   ```bash
-   chown -R usuario:usuario ./
-   ```
+3. Reset permissions on existing files:
+    ```bash
+    chown -R user:user ./
+    ```
 
-## Consejos para despliegues a producción
+## Tips for Production Deployments
 
-1. **Evitar que los ficheros del proyecto pertenezcan a `root`**  
-    Asegúrate de que ningún fichero del proyecto sea propiedad del usuario `root`. Utiliza un usuario pre configurado en la imagen y cambia su contraseña si es necesario. Por ejemplo:
-    
+1. **Avoid project files belonging to `root`**  
+    Ensure no project files are owned by the `root` user. Use a pre-configured user in the image and change its password if necessary. For example:
+
     ```dockerfile
     RUN useradd -m basic-user
     COPY --chown=basic-user:basic-user package*.json ./
     ```
-    
-2. **Excluir la carpeta `.git` en producción**  
-    Añade la carpeta `.git` en el archivo `.dockerignore` para evitar que se incluya en las imágenes de producción.
-    
-3. **Configurar una variable de entorno para producción**  
-    Define una variable de entorno que indique el entorno de producción. Esto permite, entre otras cosas, deshabilitar los logs no necesarios:
-    
+
+2. **Exclude the `.git` folder in production**  
+    Add the `.git` folder to the `.dockerignore` file to avoid including it in production images.
+
+3. **Configure a production environment variable**  
+    Define an environment variable that indicates the production environment. This allows, among other things, disabling unnecessary logs:
+
     ```dockerfile
     ENV NODE_ENV=production
     ```
-    
-4. **Usar una versión específica de la imagen base**  
-    
+
+4. **Use a specific version of the base image**  
+
     ```dockerfile
     FROM node:19.0
     ```
-    
-5. **Utilizar `exec form` para iniciar procesos**
-    - Gestiona correctamente las señales, como `SIGTERM`, para permitir una finalización controlada del proceso.
-    - Cierra las conexiones abiertas, como las de bases de datos, antes de finalizar la aplicación.  
-        Por ejemplo:
-    
+
+5. **Use `exec form` to start processes**
+    - Properly handle signals like `SIGTERM` for controlled process termination.
+    - Close open connections, such as database connections, before terminating the application.  
+        For example:
+
     ```dockerfile
     CMD ["node", "app.js"]
     ```
-    
-6. **Seleccionar un servidor de producción adecuado**  
-    Elige un servidor optimizado para entornos de producción, como **Nginx**, **Gunicorn**, entre otros, dependiendo de las necesidades de tu proyecto.
 
-## Desplegar una Aplicación en DigitalOcean con Docker
+6. **Select an appropriate production server**  
+    Choose a server optimized for production environments, such as **Nginx**, **Gunicorn**, among others, depending on your project's needs.
 
-### 1. Crear cuentas necesarias
+## Deploying an Application on DigitalOcean with Docker
 
-Antes de iniciar el despliegue, es indispensable crear las cuentas necesarias:
-- **DigitalOcean**: Dirígete a [DigitalOcean](https://www.digitalocean.com/) y regístrate para obtener una cuenta. Esta plataforma será el proveedor de infraestructura donde se ejecutará tu aplicación.
-- **Docker Hub**: Accede a [Docker Hub](https://hub.docker.com/) y crea una cuenta. Docker Hub sirve como repositorio centralizado para alojar y gestionar tus imágenes Docker.
+### 1. Create necessary accounts
 
-### 2. Construir y subir tu imagen a Docker Hub
+Before starting the deployment, it is essential to create the necessary accounts:
+- **DigitalOcean**: Go to [DigitalOcean](https://www.digitalocean.com/) and register for an account. This platform will be the infrastructure provider where your application will run.
+- **Docker Hub**: Access [Docker Hub](https://hub.docker.com/) and create an account. Docker Hub serves as a centralized repository to host and manage your Docker images.
 
-1. **Construir la imagen Docker**:
-   - Desde tu entorno de desarrollo local, asegúrate de tener un `Dockerfile` configurado correctamente.
-   - Ejecuta el siguiente comando para construir tu imagen:
-     ```bash
-     docker build -t nombre_usuario/nombre_imagen:tag .
-     ```
-     Donde:
-     - `nombre_usuario` es tu nombre de usuario en Docker Hub.
-     - `nombre_imagen` es el nombre que deseas asignar a la imagen.
-     - `tag` es una etiqueta opcional para identificar la versión (por ejemplo, `latest`).
+### 2. Build and push your image to Docker Hub
 
-2. **Iniciar sesión en Docker Hub**:
-   ```bash
-   docker login
-   ```
-   Ingresa tus credenciales cuando se te solicite.
+1. **Build the Docker image**:
+    - From your local development environment, ensure you have a properly configured `Dockerfile`.
+    - Run the following command to build your image:
+      ```bash
+      docker build -t username/image-name:tag .
+      ```
+      Where:
+      - `username` is your Docker Hub username.
+      - `image-name` is the name you want to assign to the image.
+      - `tag` is an optional tag to identify the version (e.g., `latest`).
 
-3. **Subir la imagen a Docker Hub**:
-   ```bash
-   docker push nombre_usuario/nombre_imagen:tag
-   ```
+2. **Log in to Docker Hub**:
+    ```bash
+    docker login
+    ```
+    Enter your credentials when prompted.
 
-### 3. Configurar y elegir los recursos en DigitalOcean
+3. **Push the image to Docker Hub**:
+    ```bash
+    docker push username/image-name:tag
+    ```
 
-1. **Crear un droplet en DigitalOcean**:
-   - Inicia sesión en tu cuenta de DigitalOcean.
-   - Dirígete al apartado de "Droplets" y selecciona la opción de crear un nuevo droplet.
+### 3. Configure and choose resources on DigitalOcean
 
-2. **Seleccionar la imagen desde Docker Hub**:
-   - En la sección de imágenes, selecciona la pestaña "Container Distributions".
-   - Busca tu imagen cargada en Docker Hub utilizando el formato `nombre_usuario/nombre_imagen`.
+1. **Create a droplet on DigitalOcean**:
+    - Log in to your DigitalOcean account.
+    - Go to the "Droplets" section and select the option to create a new droplet.
 
-3. **Asignar recursos de CPU y memoria**:
-   - Define los recursos necesarios para tu aplicación, como CPU, memoria y almacenamiento. Asegúrate de elegir un plan que cumpla con los requisitos de tu aplicación para un rendimiento óptimo.
+2. **Select the image from Docker Hub**:
+    - In the images section, select the "Container Distributions" tab.
+    - Search for your uploaded image on Docker Hub using the format `username/image-name`.
 
-### 4. Configurar el plan y realizar el pago
+3. **Assign CPU and memory resources**:
+    - Define the necessary resources for your application, such as CPU, memory, and storage. Ensure to choose a plan that meets your application's requirements for optimal performance.
 
-- DigitalOcean ofrece diferentes planes con cuotas mensuales según los recursos asignados.
-- Revisa los costos asociados al plan seleccionado y completa el pago mediante los métodos aceptados por la plataforma.
+### 4. Configure the plan and make the payment
 
-### 5. Desplegar la aplicación
+- DigitalOcean offers different plans with monthly fees based on the assigned resources.
+- Review the costs associated with the selected plan and complete the payment using the accepted methods on the platform.
 
-1. **Iniciar el droplet**:
-   - Una vez configurados los recursos y seleccionada la imagen, despliega el droplet.
-   - DigitalOcean provisionará el entorno automáticamente.
+### 5. Deploy the application
 
-2. **Probar la aplicación**:
-   - Accede a la dirección IP pública del droplet para verificar que tu aplicación esté funcionando correctamente.
-   - Si es necesario, realiza ajustes en la configuración del firewall o en las variables de entorno.
+1. **Start the droplet**:
+    - Once the resources are configured and the image is selected, deploy the droplet.
+    - DigitalOcean will automatically provision the environment.
 
-3. **Configurar dominio personalizado (opcional)**:
-   - Asocia un dominio a tu droplet mediante la configuración DNS en DigitalOcean.
+2. **Test the application**:
+    - Access the public IP address of the droplet to verify that your application is working correctly.
+    - If necessary, make adjustments to the firewall configuration or environment variables.
 
-**Notas Importantes:**
-- Mantén actualizadas tus imágenes en Docker Hub para garantizar que los cambios y actualizaciones se reflejen en producción.
-- Revisa regularmente los logs del sistema y de la aplicación para monitorear el rendimiento y solucionar posibles problemas.
+3. **Configure a custom domain (optional)**:
+    - Associate a domain with your droplet through the DNS configuration in DigitalOcean.
 
-
+**Important Notes:**
+- Keep your images on Docker Hub updated to ensure that changes and updates are reflected in production.
+- Regularly check system and application logs to monitor performance and troubleshoot potential issues.
